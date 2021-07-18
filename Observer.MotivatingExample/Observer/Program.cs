@@ -1,4 +1,5 @@
 ﻿using Observer.BaggageClaim;
+using Observer.TemperatueMonitor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -46,10 +47,7 @@ namespace Observer
 
             Console.WriteLine("-----------------------------------------------------------------------------------------");
             Console.WriteLine("-----------------------------------------------------------------------------------------");
-            //The following example provides an IObserver<T> implementation named ArrivalsMonitor,
-            //which is a base class that displays baggage claim information. The information is displayed alphabetically,
-            //by the name of the originating city. The methods of ArrivalsMonitor are marked as overridable (in Visual Basic)
-            //or virtual (in C#), so they can all be overridden by a derived class.
+            
             Console.WriteLine("Baggage on airport");
 
             BaggageHandler provider = new BaggageHandler();
@@ -70,7 +68,18 @@ namespace Observer
             provider.BaggageStatus(400);
             provider.LastBaggageClaimed();
 
-		}
+            Console.WriteLine("-----------------------------------------------------------------------------------------");
+            Console.WriteLine("-----------------------------------------------------------------------------------------");
+            Console.WriteLine("Temperature change");
+
+            TemperatureMonitor monitor = new TemperatureMonitor();
+            TemperatureReporter reporter = new TemperatureReporter();
+
+            monitor.Subscribe(reporter);
+            monitor.GetTemperature();
+
+
+        }
     }
 
 	class WeatherDataPrinter : IObserver<WeatherData>
