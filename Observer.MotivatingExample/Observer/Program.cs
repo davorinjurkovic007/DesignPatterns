@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Observer.BaggageClaim;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -42,6 +43,33 @@ namespace Observer
 
 			// Print result of aggregator observer
 			Console.WriteLine("Final average is: " + aggregator.GetAverage());
+
+            Console.WriteLine("-----------------------------------------------------------------------------------------");
+            Console.WriteLine("-----------------------------------------------------------------------------------------");
+            //The following example provides an IObserver<T> implementation named ArrivalsMonitor,
+            //which is a base class that displays baggage claim information. The information is displayed alphabetically,
+            //by the name of the originating city. The methods of ArrivalsMonitor are marked as overridable (in Visual Basic)
+            //or virtual (in C#), so they can all be overridden by a derived class.
+            Console.WriteLine("Baggage on airport");
+
+            BaggageHandler provider = new BaggageHandler();
+            ArrivalsMonitor observer1 = new ArrivalsMonitor("BaggageClaimMonitor1");
+            ArrivalsMonitor observer2 = new ArrivalsMonitor("SecurityExit");
+            ArrivalsMonitor observer3 = new ArrivalsMonitor("MyMonitor");
+
+            provider.BaggageStatus(712, "Detroit", 3);
+            observer1.Subscribe(provider);
+            provider.BaggageStatus(712, "Kalamazoo", 3);
+            provider.BaggageStatus(400, "New York-Kennedy", 1);
+            provider.BaggageStatus(712, "Detroit", 3);
+            observer2.Subscribe(provider);
+            provider.BaggageStatus(511, "San Francisco", 2);
+            provider.BaggageStatus(712);
+            observer3.Subscribe(provider);
+            observer2.Unsubscribe();
+            provider.BaggageStatus(400);
+            provider.LastBaggageClaimed();
+
 		}
     }
 
@@ -154,25 +182,43 @@ namespace Observer
                 o.OnNext(wd);
             }
         }
+
+        private class Unsubscriber<T> : IDisposable
+        {
+            private ICollection<T> items;
+            private T item;
+
+            public Unsubscriber(ICollection<T> items, T item)
+            {
+                this.items = items;
+                this.item = item;
+            }
+
+            public void Dispose()
+            {
+                if (this.items.Contains(this.item))
+                    this.items.Remove(this.item);
+            }
+        }
     }
 
-    public class Unsubscriber<T> : IDisposable
-    {
-        private ICollection<T> items;
-        private T item;
+    //private class Unsubscriber<T> : IDisposable
+    //{
+    //    private ICollection<T> items;
+    //    private T item;
 
-        public Unsubscriber(ICollection<T> items, T item)
-        {
-            this.items = items;
-            this.item = item;
-        }
+    //    public Unsubscriber(ICollection<T> items, T item)
+    //    {
+    //        this.items = items;
+    //        this.item = item;
+    //    }
 
-        public void Dispose()
-        {
-            if (this.items.Contains(this.item))
-                this.items.Remove(this.item);
-        }
-    }
+    //    public void Dispose()
+    //    {
+    //        if (this.items.Contains(this.item))
+    //            this.items.Remove(this.item);
+    //    }
+    //}
     
 
 	class WeatherData
