@@ -1,3 +1,5 @@
 # Design Patterns
 
-Strategy
+Some examples of:
+* Strategy Design Pattern
+* Observer Design Pattern
