@@ -1,50 +1,52 @@
-﻿using Singleton.V2_Locking;
+﻿using Singleton.V3_BetterLocking;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Singleton.Test.V2_Locking
+namespace Singleton.Test.V3_BetterLocking
 {
-    public class SingletonInstanceLocking
+    public class SingletonInstanceBetterLocking
     {
         private readonly ITestOutputHelper output;
 
-        public SingletonInstanceLocking(ITestOutputHelper output)
+        public SingletonInstanceBetterLocking(ITestOutputHelper output)
         {
             this.output = output;
-            SingletonTestHelpers.Reset(typeof(SingletonLocking));
+            SingletonTestHelpers.Reset(typeof(SingletonBetterLocking));
             Logger.Clear();
         }
 
         [Fact]
         public void ReturnsNonNullSingletonInstance()
         {
-            Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<SingletonLocking>());
+            Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<SingletonBetterLocking>());
 
-            var result = SingletonLocking.Instance;
+            var result = SingletonBetterLocking.Instance;
 
             Assert.NotNull(result);
-            Assert.IsType<SingletonLocking>(result);
+            Assert.IsType<SingletonBetterLocking>(result);
 
             Logger.Output().ToList().ForEach(h => output.WriteLine(h));
         }
 
         [Fact]
-        public void CallsConstructorMultipleTimesGibenThreeParallelInstanceCall()
+        public void OnlyCallsConstructorOnceGivenThreeInstanceCalls()
         {
-            Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<SingletonLocking>());
+            Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<SingletonBetterLocking>());
 
-            // configure logger to slow down the creation longer than the puses below
+            // configure logger to slow down the creation longer than the pauses below
             Logger.DelayMiliseconds = 10;
 
-            var result1 = SingletonLocking.Instance;
+            var result1 = SingletonBetterLocking.Instance;
             Thread.Sleep(1);
-            var result2 = SingletonLocking.Instance;
+            var result2 = SingletonBetterLocking.Instance;
             Thread.Sleep(1);
-            var result3 = SingletonLocking.Instance;
+            var result3 = SingletonBetterLocking.Instance;
 
             var log = Logger.Output();
             Assert.Equal(1, log.Count(log => log.Contains("Constructor")));
@@ -54,19 +56,19 @@ namespace Singleton.Test.V2_Locking
         }
 
         [Fact]
-        public void CallConstructorMultipleTimesGivenThreeParallelInstanceCalls()
+        public void CallsConstructorMultipleTimesGivenThreeParallelInstanceCalls()
         {
-            Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<SingletonLocking>());
+            Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<SingletonBetterLocking>());
 
-            // configre logger to slow down the creation long wnough to cause problems
+            // configure logger to slow down the creation long enough to cause problems
             Logger.DelayMiliseconds = 50;
 
             var strings = new List<string>() { "one", "two", "three" };
-            var instances = new List<SingletonLocking>();
+            var instances = new List<SingletonBetterLocking>();
             var options = new ParallelOptions() { MaxDegreeOfParallelism = 3 };
-            Parallel.ForEach(strings, options, insance =>
+            Parallel.ForEach(strings, options, instance =>
             {
-                instances.Add(SingletonLocking.Instance);
+                instances.Add(SingletonBetterLocking.Instance);
             });
 
             var log = Logger.Output();
