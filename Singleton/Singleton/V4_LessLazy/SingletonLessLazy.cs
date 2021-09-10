@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Singleton.V4_LessLazy
+﻿namespace Singleton.V4_LessLazy
 {
     // Source: https://csharpindepth.com/articles/singleton
     public sealed class SingletonLessLazy

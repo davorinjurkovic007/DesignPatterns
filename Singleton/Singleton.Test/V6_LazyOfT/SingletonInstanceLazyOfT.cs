@@ -1,16 +1,20 @@
-﻿using Singleton.V4_LessLazy;
+﻿using Singleton.V6_LazyOfT;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Singleton.Test.V4_LessLazy
+namespace Singleton.Test.V6_LazyOfT
 {
-    public class SingletonInstanceLessLazy
+    public class SingletonInstanceLazyOfT
     {
         private readonly ITestOutputHelper output;
 
-        public SingletonInstanceLessLazy(ITestOutputHelper output)
+        public SingletonInstanceLazyOfT(ITestOutputHelper output)
         {
             this.output = output;
 
@@ -24,12 +28,12 @@ namespace Singleton.Test.V4_LessLazy
         public void ReturnsNonNullSingletonInstance()
         {
             // This no longer works
-            //Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<SingletonLessLazy>());
+            //Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<Singleton>());
 
-            var result = SingletonLessLazy.Instance;
+            var result = SingletonLazyOfT.Instance;
 
             Assert.NotNull(result);
-            Assert.IsType<SingletonLessLazy>(result);
+            Assert.IsType<SingletonLazyOfT>(result);
 
             Logger.Output().ToList().ForEach(h => output.WriteLine(h));
         }
@@ -43,11 +47,11 @@ namespace Singleton.Test.V4_LessLazy
             // configure logger to slow down the creation longer than the pauses below
             Logger.DelayMiliseconds = 10;
 
-            var result1 = SingletonLessLazy.Instance;
+            var result1 = SingletonLazyOfT.Instance;
             Thread.Sleep(1);
-            var result2 = SingletonLessLazy.Instance;
+            var result2 = SingletonLazyOfT.Instance;
             Thread.Sleep(1);
-            var result3 = SingletonLessLazy.Instance;
+            var result3 = SingletonLazyOfT.Instance;
 
             var log = Logger.Output();
 
@@ -55,19 +59,6 @@ namespace Singleton.Test.V4_LessLazy
             // Assert.Equal(1, log.Count(log => log.Contains("Constructor")));
 
             Assert.Equal(3, log.Count(log => log.Contains("Instance")));
-
-            Logger.Output().ToList().ForEach(h => output.WriteLine(h));
-        }
-
-        // [Fact] // this test can only be run by itself
-        public void InitializesSingletonWhenAnotherStaticMemberIsReferenced()
-        {
-            Assert.Equal(0, Logger.Output().Count(log => log.Contains("Constructor")));
-
-            // run this test by itself to see it really work
-            var greeting = SingletonLessLazy.GREETING;
-
-            Assert.Equal(1, Logger.Output().Count(log => log.Contains("Constructor")));
 
             Logger.Output().ToList().ForEach(h => output.WriteLine(h));
         }
