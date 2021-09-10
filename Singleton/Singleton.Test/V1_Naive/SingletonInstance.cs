@@ -1,8 +1,6 @@
 ﻿using Singleton.V1_Naive;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -55,7 +53,7 @@ namespace Singleton.Test.V1_Naive
             Assert.Null(SingletonTestHelpers.GetPrivateStaticInstance<SingletonNaive>());
 
             // configure logget to slow down the cration long enough to couse problems
-            Logger.DelayMiliseconds = 5000;
+            Logger.DelayMiliseconds = 500;
 
             var strings = new List<string>() { "one", "two", "three" };
             var instances = new List<SingletonNaive>();
